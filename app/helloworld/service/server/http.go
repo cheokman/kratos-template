@@ -1,9 +1,9 @@
 package server
 
 import (
-	"kratos-remplate/app/helloworld/service/internal/conf"
-	"kratos-remplate/app/helloworld/service/internal/service"
-	v1 "kratos-template/api/helloworld/v1"
+	v1 "kratos-template/api/helloworld/service/v1"
+	"kratos-template/app/helloworld/service/internal/conf"
+	"kratos-template/app/helloworld/service/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"

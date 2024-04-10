@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	v1 "kratos-template/api/helloworld/service/v1"
+	"kratos-template/app/helloworld/service/internal/biz"
 
-	"github.com/go-kratos/kratos-layout/internal/biz"
+	v1 "kratos-template/api/helloworld/service/v1"
 )
 
 // GreeterService is a greeter service.
