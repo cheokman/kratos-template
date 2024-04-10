@@ -1,0 +1,74 @@
+version: "3.7"
+
+services:
+  db:
+    image: mysql:8.0
+    hostname: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: caldawin
+      MYSQL_DATABASE: caldawin
+      MYSQL_PASSWORD: changeme
+      MYSQL_ROOT_PASSWORD: changeme
+    volumes:
+      - ./infra/data/db:/var/lib/mysql
+
+  consul-agent-1: &consul-agent
+    image: consul:1.10.3
+    networks:
+      - consul-demo
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-agent-2:
+    <<: *consul-agent
+
+  consul-agent-3:
+    <<: *consul-agent
+
+  consul-server-1: &consul-server
+    <<: *consul-agent
+    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-server-2:
+    <<: *consul-server
+
+  consul-server-bootstrap:
+    <<: *consul-agent
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.25
+    hostname: jaeger
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: "9411"
+  redis:
+    image: "redis:alpine"
+
+    command: redis-server --requirepass bitnami
+
+    ports:
+      - 6379:6379
+
+    volumes:
+      - $PWD/infra/redis-data:/var/lib/redis
+
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+networks:
+  consul-demo:
